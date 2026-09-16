@@ -1,0 +1,6 @@
+# Giữ LF cho script chạy trên Linux/CI (CRLF làm hỏng shebang)
+*.sh   text eol=lf
+mvnw   text eol=lf
+# Windows batch giữ CRLF
+*.cmd  text eol=crlf
+*.bat  text eol=crlf
