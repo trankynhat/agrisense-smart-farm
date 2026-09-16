@@ -1,0 +1,83 @@
+:root {
+  font-family: system-ui, -apple-system, sans-serif;
+  color: #1a2e1a;
+  background: #f4f7f2;
+}
+* { box-sizing: border-box; }
+body { margin: 0; }
+
+h1 { color: #2d6a3e; margin: 0 0 4px; }
+.muted { color: #6b7d6b; font-size: 0.9rem; }
+.error { color: #c0392b; font-size: 0.9rem; }
+
+input {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border: 1px solid #cbd8cb;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+button {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  background: #2d6a3e;
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+}
+button:disabled { opacity: 0.6; cursor: default; }
+button.link {
+  background: none;
+  color: #2d6a3e;
+  padding: 8px 0;
+  text-decoration: underline;
+}
+
+.card {
+  max-width: 360px;
+  margin: 10vh auto;
+  padding: 32px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+.page { max-width: 720px; margin: 40px auto; padding: 0 16px; }
+.page header { display: flex; justify-content: space-between; align-items: center; }
+.row { display: flex; gap: 8px; flex-wrap: wrap; align-items: start; }
+.row input { width: auto; flex: 1; min-width: 120px; }
+.row button { white-space: nowrap; }
+
+.farms { list-style: none; padding: 0; }
+.farms li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px;
+  background: #fff;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+.farms li.clickable { cursor: pointer; }
+.farms li.clickable:hover { background: #eef4ec; }
+.farms li.resolved { opacity: 0.5; }
+
+.tabs { display: flex; gap: 6px; flex-wrap: wrap; margin: 16px 0 8px; }
+.tab {
+  background: #e4ede2; color: #2d6a3e; padding: 6px 12px; font-size: 0.85rem;
+}
+.tab.active { background: #2d6a3e; color: #fff; }
+
+.chart { background: #fff; border-radius: 10px; padding: 12px; }
+
+.ai { margin: 16px 0; }
+.ai-text {
+  white-space: pre-wrap; background: #fff; border-radius: 8px;
+  padding: 14px; margin-top: 10px; font-family: inherit; line-height: 1.5;
+  border-left: 3px solid #2d6a3e;
+}
+h2 { color: #2d6a3e; margin-top: 24px; }
