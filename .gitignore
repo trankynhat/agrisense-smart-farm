@@ -11,6 +11,15 @@ dist/
 # Env / secrets
 .env
 *.env
+*.secret
+*.secrets
+*.key
+
+# Local runtime files
+backend.log
+frontend.log
+backend-error.log
+frontend-error.log
 
 # IDE
 .idea/

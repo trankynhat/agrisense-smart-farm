@@ -2,7 +2,7 @@ spring:
   application:
     name: agrisense
   datasource:
-    url: jdbc:postgresql://localhost:5432/agrisense
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/agrisense}
     username: agrisense
     password: agrisense
   jpa:
@@ -16,8 +16,8 @@ spring:
     enabled: true
   data:
     redis:
-      host: localhost
-      port: 6379
+      host: ${SPRING_DATA_REDIS_HOST:localhost}
+      port: ${SPRING_DATA_REDIS_PORT:6379}
 
 agrisense:
   jwt:
@@ -27,6 +27,10 @@ agrisense:
   ai:
     # để trống → AI trả stub (demo chạy không cần key). Set GEMINI_KEY để gọi thật.
     gemini-key: ${GEMINI_KEY:}
+  telegram:
+    # để trống → tắt Telegram notification. Set both env vars để bật.
+    bot-token: ${TELEGRAM_BOT_TOKEN:}
+    chat-id: ${TELEGRAM_CHAT_ID:}
   stream:
     consumer-name: worker-1
 

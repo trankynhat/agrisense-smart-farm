@@ -4,11 +4,50 @@ Dashboard giám sát nông trại thời gian thực: sensor data → Redis Stre
 
 Stack: Spring Boot 3 (Java 17) · PostgreSQL · Redis Streams · React 18 + TypeScript (Vite).
 
-## Chạy dev
+## Chạy local bằng Docker
+
+Docker chạy full stack: PostgreSQL, Redis, Spring Boot backend và Vite frontend.
+
+Tạo file `.env` ở root (file đã được gitignore) nếu cần AI/Telegram thật:
+
+```dotenv
+GEMINI_KEY=
+TELEGRAM_BOT_TOKEN=
+TELEGRAM_CHAT_ID=
+```
+
+Khởi động:
+
+```bash
+docker compose up --build -d
+docker compose ps
+```
+
+Mở frontend tại http://localhost:5173. Backend chạy tại http://localhost:8080.
+
+Xem log:
+
+```bash
+docker compose logs -f backend
+```
+
+Dừng stack nhưng giữ dữ liệu:
+
+```bash
+docker compose down
+```
+
+Dừng và xóa cả database/Redis volumes:
+
+```bash
+docker compose down -v
+```
+
+## Chạy dev ngoài Docker
 
 ```bash
 # 1. Infra (Postgres + Redis)
-docker compose up -d
+docker compose up -d postgres redis
 
 # 2. Backend  (http://localhost:8080)
 cd backend
@@ -19,6 +58,34 @@ cd frontend
 npm install
 npm run dev
 ```
+
+Demo login: `demo@agrisense.dev` / `demo1234`.
+
+### Telegram warning
+
+Khi reading vượt ngưỡng, backend gửi một tin tới Telegram nếu có đủ `TELEGRAM_BOT_TOKEN` và `TELEGRAM_CHAT_ID`. Không commit secret. Dừng `Bot_tele/bridge.js` khi test cùng bot token; bridge dùng `getUpdates` và process thứ hai sẽ gây lỗi `Conflict`.
+
+PowerShell:
+
+```powershell
+$env:TELEGRAM_BOT_TOKEN = Get-Content "$env:USERPROFILE\Desktop\Bot_tele\TKN119_bot.txt"
+$env:TELEGRAM_CHAT_ID = "<chat-id>"
+docker compose up --build -d backend
+```
+
+Sau đó replay từ UI hoặc chạy `smoke3.sh` để tạo warning.
+
+Nếu chạy backend ngoài Docker, dùng:
+
+```powershell
+$env:TELEGRAM_BOT_TOKEN = Get-Content "$env:USERPROFILE\Desktop\Bot_tele\TKN119_bot.txt"
+$env:TELEGRAM_CHAT_ID = "<chat-id>"
+cd backend
+.\mvnw.cmd spring-boot:run
+```
+
+Không đưa token thật vào `.env.example`, README hoặc git.
+
 
 ## Trạng thái — Tuần 1 (nền)
 
@@ -43,6 +110,21 @@ curl -X POST localhost:8080/farms/1/replay?mode=historical -H "Authorization: Be
 # → readings chảy stream → consumer → Postgres; query:
 curl localhost:8080/sensors/1/readings?range=7d -H "Authorization: Bearer $TOKEN"
 ```
+
+## Telegram warning notification
+
+Khi reading vượt ngưỡng, backend tạo alert, push realtime lên dashboard và gửi tin nhắn tới Telegram bot nếu đã cấu hình. Mỗi alert gửi một tin; Telegram lỗi không làm dừng Redis consumer.
+
+Không commit token. Set biến môi trường trước khi chạy backend:
+
+```powershell
+$env:TELEGRAM_BOT_TOKEN = "<bot-token>"
+$env:TELEGRAM_CHAT_ID = "<chat-id>"
+cd backend
+./mvnw spring-boot:run
+```
+
+Tạo bot bằng [@BotFather](https://t.me/BotFather), nhắn bot ít nhất một tin, rồi lấy `chat_id` qua `https://api.telegram.org/bot<bot-token>/getUpdates`. Bỏ trống một trong hai biến để tắt notification; app vẫn chạy bình thường.
 
 ## Trạng thái — Tuần 3–5 (realtime + AI ⭐)
 

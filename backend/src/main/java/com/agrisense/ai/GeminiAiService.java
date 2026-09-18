@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 public class GeminiAiService implements AiService {
 
     private static final Logger log = LoggerFactory.getLogger(GeminiAiService.class);
-    private static final String MODEL = "gemini-1.5-flash";
+    private static final String MODEL = "gemini-flash-latest";
 
     private final String apiKey;
     private final RestClient http = RestClient.create();

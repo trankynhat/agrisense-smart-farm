@@ -1,6 +1,7 @@
 package com.agrisense.stream;
 
 import com.agrisense.alert.AlertService;
+import com.agrisense.notification.TelegramNotificationService;
 import com.agrisense.reading.Reading;
 import com.agrisense.reading.ReadingRepository;
 import com.agrisense.realtime.RealtimePublisher;
@@ -30,15 +31,17 @@ public class ReadingConsumer implements StreamListener<String, MapRecord<String,
     private final AlertService alertService;
     private final RealtimePublisher realtime;
     private final StringRedisTemplate redis;
+    private final TelegramNotificationService telegram;
 
     public ReadingConsumer(ReadingRepository readings, SensorRepository sensors,
                            AlertService alertService, RealtimePublisher realtime,
-                           StringRedisTemplate redis) {
+                           StringRedisTemplate redis, TelegramNotificationService telegram) {
         this.readings = readings;
         this.sensors = sensors;
         this.alertService = alertService;
         this.realtime = realtime;
         this.redis = redis;
+        this.telegram = telegram;
     }
 
     @Override
@@ -61,6 +64,7 @@ public class ReadingConsumer implements StreamListener<String, MapRecord<String,
                     OffsetDateTime created = a.getCreatedAt() != null ? a.getCreatedAt() : recordedAt;
                     realtime.alert(farmId, new RealtimePublisher.AlertMsg(
                             a.getId(), sensorId, a.getType(), value, a.getThreshold(), created));
+                    telegram.notifyWarning(a, sensor, farmId, recordedAt);
                 });
             }
 
